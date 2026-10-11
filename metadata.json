@@ -1,0 +1,6 @@
+{
+  "name": "Ultimate F1 Hub",
+  "description": "The Complete Formula 1 Universe - interactive season calendar, 2026 teams and drivers, live race centre, historical time machine, technical guide, and motorsport analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

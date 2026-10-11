@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate F1 Hub — The Complete Formula 1 Universe</title>
+  <meta name="description" content="Explore the premier Formula 1 universe: 2026 grid, technical breakdowns, live race centre, interactive circuits, and historical time machine from 1950 to present.">
+  <meta property="og:title" content="Ultimate F1 Hub — Formula 1 Universe">
+  <meta property="og:description" content="Explore the complete 2026 grid, technical regulations, interactive circuits, live race centre, and historical archive.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="referrer" content="no-referrer">
+
+  <!-- Google Fonts: Satori Brush & Runalto fallbacks + Racing display font & modern readable sans + monospace -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Syne:wght@700;800&family=Archivo:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            f1: {
+              red: '#E10600',
+              darkRed: '#960400',
+              bg: '#0D1117',
+              deepBg: '#080A0E',
+              surface: 'rgba(22, 27, 34, 0.75)',
+              surfaceHover: 'rgba(33, 38, 45, 0.85)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderHover: 'rgba(225, 6, 0, 0.4)',
+              silver: '#8B949E',
+              text: '#F0F6FC'
+            }
+          },
+          fontFamily: {
+            display: ['"Satori Brush"', '"Russo One"', 'Syne', 'Archivo', 'sans-serif'],
+            body: ['Runalto', '"Plus Jakarta Sans"', 'Outfit', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- AOS Animation via CDN -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <style>
+    /* Typography Font-Face Declarations for Satori Brush & Runalto */
+    @font-face {
+      font-family: 'Satori Brush';
+      src: local('Satori Brush'), local('SatoriBrush');
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Runalto';
+      src: local('Runalto'), local('Runalto Regular');
+      font-display: swap;
+    }
+
+    :root {
+      --f1-red: #E10600;
+      --font-heading: 'Satori Brush', 'Russo One', 'Syne', 'Archivo', sans-serif;
+      --font-body: 'Runalto', 'Plus Jakarta Sans', 'Outfit', sans-serif;
+    }
+    body {
+      background-color: #080A0E;
+      color: #F0F6FC;
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    .font-display {
+      font-family: var(--font-heading) !important;
+      letter-spacing: -0.01em;
+    }
+    /* Subtle Grid Background Pattern */
+    .f1-grid-bg {
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(225, 6, 0, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(225, 6, 0, 0.04) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+    /* Glass Panel Utilities */
+    .glass-panel {
+      background: rgba(13, 17, 23, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-panel-elevated {
+      background: rgba(22, 27, 34, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(225, 6, 0, 0.45);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -10px rgba(225, 6, 0, 0.18);
+    }
+    /* Active Nav Item */
+    .nav-item-active {
+      background: linear-gradient(90deg, rgba(225, 6, 0, 0.22) 0%, rgba(225, 6, 0, 0.05) 100%) !important;
+      border-left: 3px solid #E10600 !important;
+      color: #FFFFFF !important;
+      font-weight: 600 !important;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #080A0E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.18);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #E10600;
+    }
+    /* 3D Flip Card Utilities - Strict Layout Stability */
+    .driver-card-perspective {
+      perspective: 1200px;
+      -webkit-perspective: 1200px;
+      height: 480px;
+      min-height: 480px;
+      max-height: 480px;
+      position: relative;
+      contain: layout style;
+    }
+    .driver-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform-origin: center center;
+      cursor: pointer;
+      will-change: transform;
+    }
+    .driver-card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .driver-card-front,
+    .driver-card-back {
+      position: absolute !important;
+      inset: 0 !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      backface-visibility: hidden !important;
+      -webkit-backface-visibility: hidden !important;
+      border-radius: 1rem;
+      box-sizing: border-box;
+      overflow: hidden;
+      margin: 0 !important;
+    }
+    .driver-card-front {
+      transform: rotateY(0deg);
+      z-index: 2;
+    }
+    .driver-card-back {
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+    .driver-card-inner.is-flipped .driver-card-back {
+      z-index: 3;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .driver-card-inner {
+        transition: none !important;
+      }
+    }
+    /* Section Animation Container */
+    .app-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .app-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Racing Stripe Accent */
+    .racing-accent {
+      position: relative;
+    }
+    .racing-accent::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 48px;
+      height: 3px;
+      background: #E10600;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="f1-grid-bg min-h-screen text-slate-100 antialiased selection:bg-f1-red selection:text-white flex flex-col md:flex-row">
+
+  <!-- Mobile Top Header -->
+  <header class="md:hidden sticky top-0 z-40 bg-[#080A0E]/95 backdrop-blur-md border-b border-white/10 px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 bg-f1-red rounded flex items-center justify-center font-display font-black text-white text-xs tracking-tighter">F1</div>
+      <span class="font-display font-extrabold text-base tracking-wider uppercase text-white">ULTIMATE HUB</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">2026 ERA</span>
+      <button id="mobileMenuBtn" aria-label="Open Navigation Menu" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-200 focus:outline-none">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Desktop Fixed Sidebar -->
+  <aside id="sidebar" class="hidden md:flex flex-col w-64 lg:w-72 bg-[#080A0E]/90 backdrop-blur-xl border-r border-white/10 h-screen sticky top-0 shrink-0 z-30 transition-transform duration-300">
+    <!-- Brand Zone -->
+    <div class="p-5 border-b border-white/10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-f1-red rounded-lg flex items-center justify-center font-display font-black text-white text-base tracking-tighter shadow-lg shadow-f1-red/30">F1</div>
+        <div>
+          <div class="font-display font-black text-lg tracking-wider uppercase text-white leading-tight">ULTIMATE HUB</div>
+          <div class="text-[10px] text-f1-silver font-mono tracking-widest uppercase">THE F1 UNIVERSE</div>
+        </div>
+      </div>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-red-400 font-semibold">2026</span>
+    </div>
+
+    <!-- Navigation Menu (Scrollable) -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1 text-sm font-medium" id="navLinksContainer">
+      <button data-section="home" class="nav-btn nav-item-active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0 text-f1-red"></i>
+        <span>Home / Universe</span>
+      </button>
+      <button data-section="learn" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="book-open" class="w-4 h-4 shrink-0"></i>
+        <span>Learn F1 Guide</span>
+      </button>
+      <button data-section="teams" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="shield" class="w-4 h-4 shrink-0"></i>
+        <span>Teams (11 Grid)</span>
+      </button>
+      <button data-section="drivers" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+        <span>Drivers (22 Grid)</span>
+      </button>
+      <button data-section="calendar" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="calendar" class="w-4 h-4 shrink-0"></i>
+        <span>Race Calendar</span>
+      </button>
+      <button data-section="circuits" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="map" class="w-4 h-4 shrink-0"></i>
+        <span>Track Explorer</span>
+      </button>
+      <button data-section="live" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="activity" class="w-4 h-4 shrink-0 text-f1-red animate-pulse"></i>
+        <div class="flex items-center justify-between w-full">
+          <span>Live Race Centre</span>
+          <span class="text-[9px] font-mono px-1.5 py-0.2 bg-red-950 text-red-300 border border-red-800/60 rounded">LIVE FEED</span>
+        </div>
+      </button>
+      <button data-section="standings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="trophy" class="w-4 h-4 shrink-0"></i>
+        <span>Standings & Charts</span>
+      </button>
+      <button data-section="halloffame" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="award" class="w-4 h-4 shrink-0"></i>
+        <span>Hall of Fame</span>
+      </button>
+      <button data-section="timemachine" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="history" class="w-4 h-4 shrink-0"></i>
+        <span>Time Machine (1950+)</span>
+      </button>
+      <button data-section="technology" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="cpu" class="w-4 h-4 shrink-0"></i>
+        <span>F1 Technology</span>
+      </button>
+      <button data-section="history" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="flag" class="w-4 h-4 shrink-0"></i>
+        <span>Race History & Eras</span>
+      </button>
+      <button data-section="audit" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="shield-check" class="w-4 h-4 shrink-0 text-emerald-400"></i>
+        <span>Statistics Audit Hub</span>
+      </button>
+      <button data-section="favorites" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="bookmark" class="w-4 h-4 shrink-0"></i>
+        <span>Saved Favorites</span>
+      </button>
+      <button data-section="settings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all text-left">
+        <i data-lucide="settings" class="w-4 h-4 shrink-0"></i>
+        <span>Settings & About</span>
+      </button>
+    </nav>
+
+    <!-- Bottom Quick Info -->
+    <div class="p-3 border-t border-white/10 text-xs text-f1-silver flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+        <span class="font-mono text-[11px]">Next: Bahrain GP</span>
+      </div>
+      <span class="font-mono text-[10px] text-slate-500">v2.6 FIA Spec</span>
+    </div>
+  </aside>
+
+  <!-- Mobile Drawer Overlay -->
+  <div id="mobileDrawer" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden transition-opacity">
+    <div class="bg-[#080A0E] w-72 h-full flex flex-col p-4 border-r border-white/10">
+      <div class="flex items-center justify-between pb-4 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-f1-red rounded flex items-center justify-center font-display font-black text-white text-sm">F1</div>
+          <span class="font-display font-black text-sm uppercase text-white">ULTIMATE HUB</span>
+        </div>
+        <button id="closeDrawerBtn" aria-label="Close Navigation Menu" class="p-1.5 rounded-lg bg-white/5 text-slate-300">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto py-3 space-y-1 text-sm" id="mobileNavContainer">
+        <!-- Cloned or dynamically bound buttons -->
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 min-w-0 max-w-full p-4 md:p-6 lg:p-8 overflow-x-hidden">
+    <!-- Top Utility Bar (Timezone & Quick Switcher) -->
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4 glass-panel px-4 py-3 rounded-xl border border-white/10">
+      <div class="flex items-center gap-3">
+        <span class="text-xs uppercase tracking-wider font-mono text-slate-400">Current Season:</span>
+        <select id="seasonSelector" class="bg-black/40 border border-white/15 text-white text-xs font-mono rounded px-2.5 py-1 focus:outline-none focus:border-f1-red">
+          <option value="2026" selected>2026 (Active Regulations Era)</option>
+          <option value="2025">2025 Season</option>
+          <option value="2024">2024 Season</option>
+          <option value="2023">2023 Season</option>
+          <option value="2021">2021 (Epic Title Battle)</option>
+        </select>
+        <span class="hidden sm:inline-block text-xs font-mono text-slate-500">|</span>
+        <div class="hidden sm:flex items-center gap-1.5 text-xs font-mono text-slate-400">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-f1-red"></i>
+          <span>TZ:</span>
+          <select id="timeZoneSelector" class="bg-transparent border-0 text-slate-200 text-xs font-mono focus:outline-none cursor-pointer">
+            <option value="local">Your Local Time</option>
+            <option value="UTC">UTC (Race Control)</option>
+            <option value="track">Track Local Time</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 text-xs font-mono text-slate-300 bg-black/40 px-3 py-1 rounded border border-white/10">
+          <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span id="globalCountdownLabel">Countdown to R01: </span>
+          <span id="globalCountdownTime" class="font-bold text-white tabular-nums">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTIONS ROOT -->
+    <div id="sectionsRoot">
+      <!-- Section 1: Home / F1 Universe -->
+      <section id="section-home" class="app-section active space-y-8">
+        <!-- Hero Banner -->
+        <div class="relative overflow-hidden rounded-2xl glass-panel border border-white/15 p-6 md:p-10 lg:p-12">
+          <div class="absolute -right-20 -top-20 w-96 h-96 bg-f1-red/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 max-w-3xl space-y-4">
+            <div class="flex items-center gap-2 text-xs font-mono text-f1-red font-semibold uppercase tracking-widest">
+              <span>Formula One World Championship</span>
+              <span>·</span>
+              <span class="text-slate-400">The 2026 Grid</span>
+            </div>
+            <h1 class="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white tracking-tight uppercase leading-none">
+              Welcome to the World of <span class="text-f1-red">Formula 1</span>
+            </h1>
+            <p class="text-slate-300 text-base md:text-lg font-light leading-relaxed">
+              Step into the pinnacle of motorsport. Experience the new technical regulations era featuring 11 world-class constructors, active aerodynamics, 100% sustainable fuels, and next-generation 350kW hybrid power units.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+              <button onclick="switchSection('learn')" class="px-6 py-3 bg-f1-red hover:bg-f1-darkRed text-white font-display font-bold tracking-wider text-sm rounded-lg transition-all shadow-lg shadow-f1-red/30 flex items-center gap-2">
+                <span>EXPLORE F1</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+              <button onclick="switchSection('teams')" class="px-6 py-3 bg-white/5 hover:bg-white/10 text-white border border-white/15 font-display font-bold tracking-wider text-sm rounded-lg transition-all flex items-center gap-2">
+                <span>MEET THE 11 TEAMS</span>
+                <i data-lucide="shield" class="w-4 h-4"></i>
+              </button>
+              <button onclick="switchSection('live')" class="px-5 py-3 bg-red-950/40 hover:bg-red-950/70 text-red-200 border border-red-800/40 font-mono text-xs rounded-lg transition-all flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                <span>RACE CENTRE</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Statistics Strip -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Current Era</div>
+            <div class="text-2xl font-display font-black text-white mt-1">2026</div>
+            <div class="text-[11px] text-emerald-400 font-mono mt-0.5">Active Aero + 100% E-Fuel</div>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Constructors</div>
+            <div class="text-2xl font-display font-black text-white mt-1">11 Teams</div>
+            <div class="text-[11px] text-f1-red font-mono mt-0.5">+ Cadillac F1 Entry</div>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Drivers Grid</div>
+            <div class="text-2xl font-display font-black text-white mt-1">22 Drivers</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-0.5">Full Super Licence</div>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Calendar Rounds</div>
+            <div class="text-2xl font-display font-black text-white mt-1">24 GPs</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-0.5">6 Sprint Weekends</div>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Power Unit Split</div>
+            <div class="text-2xl font-display font-black text-white mt-1">50 / 50</div>
+            <div class="text-[11px] text-cyan-400 font-mono mt-0.5">ICE & Electric (350kW)</div>
+          </div>
+          <div class="glass-panel p-4 rounded-xl border border-white/10">
+            <div class="text-[11px] font-mono uppercase text-slate-400">Downforce Spec</div>
+            <div class="text-2xl font-display font-black text-white mt-1">-30% Drag</div>
+            <div class="text-[11px] text-purple-400 font-mono mt-0.5">Z-Mode & X-Mode Aero</div>
+          </div>
+        </div>
+
+        <!-- Two Column Hub Spotlight -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Next Race Focus -->
+          <div class="lg:col-span-2 glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="flag" class="w-4 h-4 text-f1-red"></i>
+                <h2 class="font-display font-bold text-lg text-white uppercase tracking-wider">Upcoming Grand Prix</h2>
+              </div>
+              <span class="text-xs font-mono text-f1-red bg-red-950/40 border border-red-800/40 px-2 py-0.5 rounded">Round 01</span>
+            </div>
+            
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+              <div class="w-full md:w-1/2 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-2xl">🇧🇭</span>
+                  <div>
+                    <h3 class="font-display font-black text-xl text-white">Bahrain Grand Prix</h3>
+                    <div class="text-xs text-slate-400">Bahrain International Circuit · Sakhir</div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono text-slate-300">
+                  <div class="bg-black/30 p-2 rounded border border-white/5">
+                    <span class="text-slate-400 block text-[10px]">CIRCUIT LENGTH</span>
+                    <span class="font-bold text-white">5.412 km</span>
+                  </div>
+                  <div class="bg-black/30 p-2 rounded border border-white/5">
+                    <span class="text-slate-400 block text-[10px]">LAPS / DISTANCE</span>
+                    <span class="font-bold text-white">57 Laps / 308.2 km</span>
+                  </div>
+                  <div class="bg-black/30 p-2 rounded border border-white/5">
+                    <span class="text-slate-400 block text-[10px]">LAP RECORD</span>
+                    <span class="font-bold text-white">1:31.447 (De la Rosa)</span>
+                  </div>
+                  <div class="bg-black/30 p-2 rounded border border-white/5">
+                    <span class="text-slate-400 block text-[10px]">TURNS</span>
+                    <span class="font-bold text-white">15 (9 Right, 6 Left)</span>
+                  </div>
+                </div>
+                <div class="pt-2 flex items-center gap-3">
+                  <button onclick="switchSection('calendar')" class="text-xs font-mono text-f1-red hover:underline flex items-center gap-1">
+                    <span>View full weekend timetable</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Track Outline SVG preview -->
+              <div class="w-full md:w-1/2 bg-black/40 p-4 rounded-xl border border-white/5 flex flex-col items-center justify-center">
+                <div class="text-[10px] font-mono text-slate-500 mb-2 uppercase tracking-wider">Track Map Outline</div>
+                <svg viewBox="0 0 400 240" class="w-full h-44 stroke-f1-red fill-none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M 60,180 L 120,180 C 140,180 150,160 170,160 L 220,160 C 240,160 250,130 270,130 L 320,130 C 350,130 360,90 340,70 L 300,50 C 270,35 250,50 230,70 L 200,100 C 180,120 160,110 140,90 L 100,50 C 70,20 40,40 50,80 L 60,180 Z" />
+                  <circle cx="60" cy="180" r="5" fill="#FFFFFF" />
+                  <text x="75" y="195" fill="#8B949E" font-size="10" font-family="JetBrains Mono">Start / Finish Line</text>
+                  <text x="280" y="80" fill="#E10600" font-size="10" font-family="JetBrains Mono">Turn 4 Hairpin</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Launch Shortcuts -->
+          <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 border-b border-white/10 pb-3 mb-4">
+                <i data-lucide="compass" class="w-4 h-4 text-f1-red"></i>
+                <h3 class="font-display font-bold text-lg text-white uppercase tracking-wider">Explore Modules</h3>
+              </div>
+              <div class="space-y-2.5">
+                <button onclick="switchSection('learn')" class="w-full p-3 rounded-lg bg-black/30 hover:bg-white/5 border border-white/5 hover:border-white/20 transition-all flex items-center justify-between text-left">
+                  <div>
+                    <div class="text-sm font-semibold text-white">Beginner to Advanced Guide</div>
+                    <div class="text-xs text-slate-400">Rules, flags, car tech & pit strategies</div>
+                  </div>
+                  <i data-lucide="arrow-right" class="w-4 h-4 text-f1-red"></i>
+                </button>
+                <button onclick="switchSection('circuits')" class="w-full p-3 rounded-lg bg-black/30 hover:bg-white/5 border border-white/5 hover:border-white/20 transition-all flex items-center justify-between text-left">
+                  <div>
+                    <div class="text-sm font-semibold text-white">24 Circuit Track Explorer</div>
+                    <div class="text-xs text-slate-400">Interactive layouts, turn counts & telemetry</div>
+                  </div>
+                  <i data-lucide="arrow-right" class="w-4 h-4 text-f1-red"></i>
+                </button>
+                <button onclick="switchSection('timemachine')" class="w-full p-3 rounded-lg bg-black/30 hover:bg-white/5 border border-white/5 hover:border-white/20 transition-all flex items-center justify-between text-left">
+                  <div>
+                    <div class="text-sm font-semibold text-white">Historical Time Machine</div>
+                    <div class="text-xs text-slate-400">Every championship season from 1950 onward</div>
+                  </div>
+                  <i data-lucide="arrow-right" class="w-4 h-4 text-f1-red"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="p-3 rounded-lg bg-red-950/20 border border-red-900/30 text-xs text-slate-300">
+              <span class="font-bold text-white block mb-0.5">💡 Pro Tip</span>
+              Use the sidebar to jump directly to any team or driver profile, or open Live Race Centre to view real-time timing & session data.
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured 2026 Innovation Spotlight -->
+        <div class="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-display font-black text-xl text-white uppercase tracking-wider">The 2026 Technical Revolution</h2>
+              <p class="text-xs text-slate-400 mt-1">Everything you need to know about Formula 1's biggest regulatory overhaul in modern history.</p>
+            </div>
+            <button onclick="switchSection('technology')" class="text-xs font-mono text-f1-red hover:underline flex items-center gap-1">
+              <span>Full Technical Deep Dive</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5 space-y-2">
+              <div class="w-8 h-8 rounded bg-f1-red/20 text-f1-red flex items-center justify-center font-bold font-mono text-xs">01</div>
+              <h4 class="font-display font-bold text-base text-white">Active Aerodynamics</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Replacing traditional DRS: Cars switch between high-downforce cornering (Z-Mode) and low-drag straightaway running (X-Mode) with moving front and rear wing flaps.
+              </p>
+            </div>
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5 space-y-2">
+              <div class="w-8 h-8 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold font-mono text-xs">02</div>
+              <h4 class="font-display font-bold text-base text-white">50% Electric 350kW MGU-K</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Electric output triples from 120kW to 350kW. The complex MGU-H is abolished, making power units more accessible for new manufacturers like Audi and Cadillac.
+              </p>
+            </div>
+            <div class="bg-black/30 p-4 rounded-xl border border-white/5 space-y-2">
+              <div class="w-8 h-8 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold font-mono text-xs">03</div>
+              <h4 class="font-display font-bold text-base text-white">100% Sustainable Fuel</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">
+                Internal combustion engines now run strictly on advanced drop-in synthetic e-fuels or non-food bio-fuels with zero net fossil carbon footprint.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Container Placeholders for the remaining 13 modules -->
+      <section id="section-learn" class="app-section space-y-8"></section>
+      <section id="section-teams" class="app-section space-y-8"></section>
+      <section id="section-drivers" class="app-section space-y-8"></section>
+      <section id="section-calendar" class="app-section space-y-8"></section>
+      <section id="section-circuits" class="app-section space-y-8"></section>
+      <section id="section-live" class="app-section space-y-8"></section>
+      <section id="section-standings" class="app-section space-y-8"></section>
+      <section id="section-halloffame" class="app-section space-y-8"></section>
+      <section id="section-timemachine" class="app-section space-y-8"></section>
+      <section id="section-technology" class="app-section space-y-8"></section>
+      <section id="section-history" class="app-section space-y-8"></section>
+      <section id="section-audit" class="app-section space-y-8"></section>
+      <section id="section-favorites" class="app-section space-y-8"></section>
+      <section id="section-settings" class="app-section space-y-8"></section>
+    </div>
+  </main>
+
+  <!-- Global Modal Layer -->
+  <div id="globalModalBackdrop" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 transition-opacity duration-200">
+    <div id="globalModalCard" class="glass-panel-elevated w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-white/15 p-6 md:p-8 relative shadow-2xl">
+      <button id="modalCloseBtn" aria-label="Close dialog" class="absolute top-5 right-5 p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Floating Ask Gemini Button (Moved to Bottom-Right) -->
+  <div id="geminiFloatingContainer" class="fixed bottom-6 right-6 z-40">
+    <button id="askGeminiBtn" aria-label="Ask Gemini AI Assistant" class="px-4 py-2.5 rounded-full glass-panel-elevated hover:bg-white/10 border border-red-500/30 hover:border-red-500/60 text-white font-mono text-xs flex items-center gap-2.5 shadow-xl shadow-red-950/40 hover:scale-105 active:scale-95 transition-all">
+      <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+      <i data-lucide="sparkles" class="w-4 h-4 text-f1-red"></i>
+      <span class="font-bold tracking-wider">ASK GEMINI</span>
+    </button>
+  </div>
+
+  <!-- Ask Gemini AI Assistant Floating Glass Panel (Moved to Bottom-Right) -->
+  <div id="geminiChatPanel" class="fixed bottom-20 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] h-[550px] max-h-[85vh] glass-panel-elevated rounded-2xl border border-white/15 shadow-2xl flex flex-col hidden transition-all duration-300">
+    <!-- Header -->
+    <div class="p-4 border-b border-white/10 flex items-center justify-between bg-black/40 rounded-t-2xl">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-f1-red/20 border border-f1-red/40 flex items-center justify-center text-f1-red">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <div class="font-display font-bold text-sm text-white">Gemini Race Engineer</div>
+          <div class="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Live AI Assistance</span>
+          </div>
+        </div>
+      </div>
+      <button id="closeGeminiChatBtn" aria-label="Close Gemini Chat" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 transition-colors">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Messages Container -->
+    <div id="geminiMessagesContainer" class="flex-1 overflow-y-auto p-4 space-y-3 text-xs leading-relaxed">
+      <!-- Welcome message -->
+      <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-200 space-y-2">
+        <div class="font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="bot" class="w-3.5 h-3.5 text-f1-red"></i>
+          <span>Pit Wall Telemetry AI</span>
+        </div>
+        <p>Welcome to the paddock! I am your AI Race Engineer powered by Google Gemini. Ask me about the 2026 regulations, driver histories, race strategies, or general questions.</p>
+        <div class="pt-1 flex flex-wrap gap-1.5 font-mono text-[10px]" id="geminiSuggestedPrompts">
+          <button type="button" class="gemini-prompt-chip px-2.5 py-1 rounded bg-black/40 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors">Explain 2026 active aero</button>
+          <button type="button" class="gemini-prompt-chip px-2.5 py-1 rounded bg-black/40 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors">Hamilton vs Leclerc career</button>
+          <button type="button" class="gemini-prompt-chip px-2.5 py-1 rounded bg-black/40 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors">How does MGU-K work?</button>
+          <button type="button" class="gemini-prompt-chip px-2.5 py-1 rounded bg-black/40 hover:bg-white/10 border border-white/10 text-slate-300 transition-colors">Undercut vs overcut</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Footer -->
+    <div class="p-3 border-t border-white/10 bg-black/40 rounded-b-2xl">
+      <form id="geminiChatForm" class="flex items-center gap-2">
+        <input type="text" id="geminiChatInput" placeholder="Ask about regulations, drivers, strategies..." class="flex-1 bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-f1-red">
+        <button type="submit" id="geminiSendBtn" aria-label="Send message" class="p-2.5 bg-f1-red hover:bg-f1-darkRed text-white rounded-xl transition-colors">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </form>
+      <div class="text-[9px] font-mono text-slate-500 text-center mt-2">
+        Powered by Google Gemini 3.8 Flash · Verified F1 Database Grounding
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Data & Logic -->
+  <script src="./f1-visuals.js"></script>
+  <script src="./f1-data.js"></script>
+  <script src="./f1-statistics-service.js"></script>
+  <script src="./f1-app.js"></script>
+</body>
+</html>
